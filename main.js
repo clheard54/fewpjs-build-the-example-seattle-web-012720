@@ -3,101 +3,40 @@ const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
 const hearts = document.getElementsByClassName("like")
-let color = hearts[0].getElementsByClassName("like-glyph")[0]
 
-let toggleHeart = {
+toggleHeart = {
   '♡': '♥',
   '♥': '♡'
 }
 
-let toggleRed = {
-  'red': '',
-  '': 'red'
-}
-
-
-
-// Your JavaScript code goes here!
 document.addEventListener("DOMContentLoaded", function() {
-  function postLikes(e) {
-    let heartTarget = e.target
-    console.log(heartTarget);
+  function postLike(event) {
     mimicServerCall()
-      .then(response => {
-        heartTarget.innerText = toggleHeart[heartTarget.innerText];
-        heartTarget.style.color = toggleRed[heartTarget.style.color];
+    .then(response => {
+      event.target.innerText = toggleHeart[event.target.innerText]
+      event.target.classList.toggle("activated-heart")
       })
-      .catch(function(error) {
-        alert("Something went wrong")
-        document.getElementById("modal").className = ''
-          setTimeout(function() {
-          document.getElementById("modal").className = 'hidden'}, 5000)
+      .catch(error => {
+        const modal = document.getElementById('modal');
+        modal.className = '';
+        const modalMsg = document.getElementById('modal-message');
+        modalMsg.innerText = error;
+        setTimeout(function(){
+          modal.className = 'hidden'
+        }, 5000)
       })
   }
 
-
-  for (let i=0; i<hearts.length; i++) {
-    let heartIcon = hearts[i];
-    heartIcon.addEventListener("click", postLikes) 
+  for (heartIcon of hearts) {
+    heartIcon.addEventListener("click", postLike) 
   }
+})
 
-});
-    
-    /*{
-          color.innerText = FULL_HEART;
-          color.classList.add("activated-heart")
-          console.log(color)
-        })
-      } else if (color.classList == ("like-glyph", "activated-heart")) {
-        heartIcon.addEventListener("click", function() {
-          color.innerText = EMPTY_HEART;
-          color.classList.remove("activated-heart")
-        })
-        }
-      }
-}   
-  */  
-    
-      
-  // function heartCallback(event) {
-  //     let heartIcon = event.target;
-  //     let color = heartIcon.getElementsByClassName("like-glyph")[0];
-  //     mimicServerCall("huh?")
-  //       .then(function(res) {
-  //           toggleRed(color);
-  //           color.innerText = toggleHeart[color.innerText]
-  //           })
-  //         .catch(function(error) {
-  //           alert("Something has gone terribly wrong")
-  //           document.getElementById("modal").className = ''
-  //           setTimeout(function() {
-  //             document.getElementById("modal").className = 'hidden'}, 5000)
-  //         })
-  //       };
-  //     }
-      // 
-      //   })
-      // }
-
-
-// for (let i=0; i<hearts.length; i++) {
-//   let heartIcon = hearts[i];
-//   heartIcon.addEventListener("click", function() {
-//      let color = heartIcon.getElementsByClassName("like-glyph")[0];
-//      if (color.classList == ("like-glyph") "activated-heart")) {
-//        color.innerText = EMPTY_HEART;
-//        color.classList.remove("activated-heart")
-//      } else {
-//      color.innerText = FULL_HEART;
-//      color.classList.add("activated-heart")
-//      console.log(color)
-//      };
-//   })
-// }
-
-//------------------------------------------------------------------------------
+/*
+------------------------------------------------------------------------------
 // Ignore after this point. Used only for demo purposes
 //------------------------------------------------------------------------------
+*/
 
 function mimicServerCall(url="http://mimicServer.example.com", config={}) {
   return new Promise(function(resolve, reject) {
